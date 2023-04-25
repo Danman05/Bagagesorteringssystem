@@ -17,6 +17,8 @@ namespace Bagagesorteringssystem
 
             Random random = new();
             int randomNumber;
+
+            // Randomly generates luggage, the destination is depending on the random number
             while (true)
             {
                 try
@@ -33,14 +35,15 @@ namespace Bagagesorteringssystem
                     else if (randomNumber == 3)
                         Program.luggageBelt.Enqueue(new Luggage("SYD"));
 
+                    // Pulses to the waiting thread
                     Monitor.Pulse(Program.luggageBelt);
                 }
                 finally
                 {
-                    Program.statusMessageQueue.Add("Luggage added");
-                    Console.WriteLine($"\nLuggage checked in:\nDestination: {Program.luggageBelt.Peek().Destination}\nNumber: {Program.luggageBelt.Peek().LuggageNumber}\nDate stamp: {Program.luggageBelt.Peek().DateStamp}");
+                    // Adds an status message to the list
+                    Program.statusMessageQueue.Add($"Check in: \nDestination:{Program.luggageBelt.Peek().Destination}\nNumber: {Program.luggageBelt.Peek().LuggageNumber}\nDate stamp: {Program.luggageBelt.Peek().DateStamp}");
                     Monitor.Exit(Program.luggageBelt);
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                 }
             }
         }

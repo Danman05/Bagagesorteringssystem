@@ -7,7 +7,7 @@ namespace Bagagesorteringssystem
 {
     internal class Program
     {
-        // Static queues, 
+        // Static queues 
         public static Queue<Luggage> luggageBelt = new();
         public static Queue<Luggage> terminalDenmark = new();
         public static Queue<Luggage> terminalThailand = new();
@@ -26,19 +26,11 @@ namespace Bagagesorteringssystem
             Thread terminalThreadThailand = new(Terminal.LuggageThailand);
             Thread terminalThreadAustralia = new(Terminal.LuggageAustralia);
 
-
             // Starting all the threads
             produceLuggage.Start();
-            Thread.Sleep(50);
             sortLuggage.Start();
-            Thread.Sleep(50);
-
             terminalThreadDenmark.Start();
-            Thread.Sleep(50);
-
             terminalThreadThailand.Start();
-            Thread.Sleep(50);
-
             terminalThreadAustralia.Start();
 
             // GUI
@@ -53,7 +45,7 @@ namespace Bagagesorteringssystem
                     Monitor.Enter(terminalThailand);
                     Monitor.Enter(terminalAustralia);
                     Console.Clear();
-                    Console.WriteLine($"[Terminal to Copenhagen] Luggage: {terminalDenmark.Count}/25");
+                    Console.WriteLine($"[Terminal to Copenhagen] Luggage: {terminalDenmark.Count}/30");
                     Console.WriteLine($"[Terminal to Bangkok]    Luggage: {terminalThailand.Count}/40");
                     Console.WriteLine($"[Terminal to Sydney]     Luggage: {terminalAustralia.Count}/50");
 
@@ -72,18 +64,15 @@ namespace Bagagesorteringssystem
                             statusMessageQueue.Clear();
                         }
                     }
-
                 }
                 finally
                 {
-
+                    // Exit out of the shared ressource
                     Monitor.Exit(terminalDenmark);
                     Monitor.Exit(terminalThailand);
                     Monitor.Exit(terminalAustralia);
                     Thread.Sleep(500);
-
                 }
-
             }
 
             // Joins all the working threads when they are terminated
