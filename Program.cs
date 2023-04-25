@@ -7,11 +7,6 @@ namespace Bagagesorteringssystem
 {
     internal class Program
     {
-        // Static queues 
-        public static Queue<Luggage> luggageBelt = new();
-        public static Queue<Luggage> terminalDenmark = new();
-        public static Queue<Luggage> terminalThailand = new();
-        public static Queue<Luggage> terminalAustralia = new();
 
         // Public static List<string> for the other classes to add messages to the statusMessage
         public static List<string> statusMessageQueue = new();
@@ -41,13 +36,13 @@ namespace Bagagesorteringssystem
                 {
                     // Enters the shared ressource using the Monitor class to lock it
                     // Safely prints out the luggage capacity for the terminals 
-                    Monitor.Enter(terminalDenmark);
-                    Monitor.Enter(terminalThailand);
-                    Monitor.Enter(terminalAustralia);
+                    Monitor.Enter(Terminal.terminalDenmark);
+                    Monitor.Enter(Terminal.terminalThailand);
+                    Monitor.Enter(Terminal.terminalAustralia);
                     Console.Clear();
-                    Console.WriteLine($"[Terminal to Copenhagen] Luggage: {terminalDenmark.Count}/30");
-                    Console.WriteLine($"[Terminal to Bangkok]    Luggage: {terminalThailand.Count}/40");
-                    Console.WriteLine($"[Terminal to Sydney]     Luggage: {terminalAustralia.Count}/50");
+                    Console.WriteLine($"[Terminal to Copenhagen] Luggage: {Terminal.terminalDenmark.Count}/{Plane.MaxLuggageDenmark}");
+                    Console.WriteLine($"[Terminal to Bangkok]    Luggage: {Terminal.terminalThailand.Count}/{Plane.MaxLuggageThailand}");
+                    Console.WriteLine($"[Terminal to Sydney]     Luggage: {Terminal.terminalAustralia.Count}/{Plane.MaxLuggageAustralia}");
 
                     // Prints out an status message if an plane is taking of
                     // Using lock to lock the message
@@ -68,9 +63,9 @@ namespace Bagagesorteringssystem
                 finally
                 {
                     // Exit out of the shared ressource
-                    Monitor.Exit(terminalDenmark);
-                    Monitor.Exit(terminalThailand);
-                    Monitor.Exit(terminalAustralia);
+                    Monitor.Exit(Terminal.terminalDenmark);
+                    Monitor.Exit(Terminal.terminalThailand);
+                    Monitor.Exit(Terminal.terminalAustralia);
                     Thread.Sleep(500);
                 }
             }
@@ -84,6 +79,33 @@ namespace Bagagesorteringssystem
 
             Console.Read();
 
+        }
+        public static void WriteLog(string strValue)
+        {
+            try
+            {
+                //Logfile
+                string path = "Log.txt";
+                StreamWriter sw;
+                if (!File.Exists(path))
+                { sw = File.CreateText(path); }
+                else
+                { sw = File.AppendText(path); }
+
+                LogWrite(strValue, sw);
+
+                sw.Flush();
+                sw.Close();
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+        private static void LogWrite(string logMessage, StreamWriter w)
+        {
+            w.WriteLine("{0}", logMessage);
+            w.WriteLine("----------------------------------------");
         }
     }
 }

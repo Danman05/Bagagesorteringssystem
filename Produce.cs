@@ -8,6 +8,14 @@ namespace Bagagesorteringssystem
 {
     internal class Produce
     {
+        /// <summary>
+        /// LuggageBelt holds all unsorted pieces of luggage
+        /// </summary>
+      
+        public static Queue<Luggage> luggageBelt = new();
+        readonly static Random random = new();
+
+
         public static void ProduceLuggage()
         {
             // Terminal Locations
@@ -15,34 +23,48 @@ namespace Bagagesorteringssystem
             // Bangkok airport = BKK -- Thailand
             // Sydney airport = SYD -- Australia
 
-            Random random = new();
-            int randomNumber;
 
             // Randomly generates luggage, the destination is depending on the random number
+            // All produced/checked in luggage gets enqueued to the luggageBelt
             while (true)
             {
                 try
                 {
-                    Monitor.Enter(Program.luggageBelt);
-                    randomNumber = random.Next(1, 4);
+                    Monitor.Enter(luggageBelt);
+                    int randomNumber = random.Next(1, 4);
 
-                    if (randomNumber == 1)
-                        Program.luggageBelt.Enqueue(new Luggage("CPH"));
+                    switch (randomNumber)
+                    {
+                        case 1:
+                            luggageBelt.Enqueue(new Luggage("CPH"));
+                            Program.WriteLog("Luggage to copenhagen is added");
+                            break;
+                        case 2:
+                            luggageBelt.Enqueue(new Luggage("BKK"));
+                            Program.WriteLog("Luggage to Thailand is added");
+                            break;
+                        case 3:
+                            luggageBelt.Enqueue(new Luggage("SYD"));
+                            Program.WriteLog("Luggage to Australia is added");
 
-                    else if (randomNumber == 2)
-                        Program.luggageBelt.Enqueue(new Luggage("BKK"));
-
-                    else if (randomNumber == 3)
-                        Program.luggageBelt.Enqueue(new Luggage("SYD"));
+                            break;
+                        default:
+                            luggageBelt.Enqueue(new Luggage("Lost Luggage"));
+                            break;
+                    }
 
                     // Pulses to the waiting thread
-                    Monitor.Pulse(Program.luggageBelt);
+                    Monitor.Pulse(luggageBelt);
                 }
                 finally
                 {
                     // Adds an status message to the list
-                    Program.statusMessageQueue.Add($"Check in: \nDestination:{Program.luggageBelt.Peek().Destination}\nNumber: {Program.luggageBelt.Peek().LuggageNumber}\nDate stamp: {Program.luggageBelt.Peek().DateStamp}");
-                    Monitor.Exit(Program.luggageBelt);
+                    Program.statusMessageQueue.Add($"Check in: " +
+                        $"\nDestination:{luggageBelt.Peek().Destination}" +
+                        $"\nNumber: {luggageBelt.Peek().LuggageNumber}" +
+                        $"\nDate stamp: {luggageBelt.Peek().DateStamp}");
+
+                    Monitor.Exit(luggageBelt);
                     Thread.Sleep(200);
                 }
             }

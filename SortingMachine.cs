@@ -9,53 +9,52 @@ namespace Bagagesorteringssystem
 {
     internal class SortingMachine
     {
+        private static Luggage? luggage;
         public static void SortLuggage()
         {
-            Luggage luggage;
-
             while (true)
             {
                 try
                 {
 
                     // Locks the some shared ressources
-                    Monitor.Enter(Program.luggageBelt);
-                    Monitor.Enter(Program.terminalDenmark);
-                    Monitor.Enter(Program.terminalThailand);
-                    Monitor.Enter(Program.terminalAustralia);
+                    Monitor.Enter(Produce.luggageBelt);
+                    Monitor.Enter(Terminal.terminalDenmark);
+                    Monitor.Enter(Terminal.terminalThailand);
+                    Monitor.Enter(Terminal.terminalAustralia);
 
                     // Check if there is less or equal 3 items on the luggageBelt, if so then wait for more items
-                    if (Program.luggageBelt.Count <= 3)
+                    if (Produce.luggageBelt.Count <= 3)
                     {
-                        Monitor.Wait(Program.luggageBelt);
+                        Monitor.Wait(Produce.luggageBelt);
                     }
 
                     // Dequeues an item from the luggageBelt, so we use sort it to the correct terminal
-                    luggage = Program.luggageBelt.Dequeue();
+                    luggage = Produce.luggageBelt.Dequeue();
 
 
                     // Checks the destination of the luggage and queues it to the correct terminal
 
                     if (luggage.Destination == "CPH")
                     {
-                        Program.terminalDenmark.Enqueue(luggage);
+                        Terminal.terminalDenmark.Enqueue(luggage);
                     }
                     else if (luggage.Destination == "BKK")
                     {
-                        Program.terminalThailand.Enqueue(luggage);
+                        Terminal.terminalThailand.Enqueue(luggage);
                     }
                     else if (luggage.Destination == "SYD")
                     {
-                        Program.terminalAustralia.Enqueue(luggage);
+                        Terminal.terminalAustralia.Enqueue(luggage);
                     }
                 }
                 finally
                 {
                     // Exits out of all the Entered ressources
-                    Monitor.Exit(Program.luggageBelt);
-                    Monitor.Exit(Program.terminalDenmark);
-                    Monitor.Exit(Program.terminalThailand);
-                    Monitor.Exit(Program.terminalAustralia);
+                    Monitor.Exit(Produce.luggageBelt);
+                    Monitor.Exit(Terminal.terminalDenmark);
+                    Monitor.Exit(Terminal.terminalThailand);
+                    Monitor.Exit(Terminal.terminalAustralia);
                     Thread.Sleep(100);
                 }
             }

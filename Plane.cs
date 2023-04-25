@@ -14,8 +14,13 @@ namespace Bagagesorteringssystem
         private string destination;
 
 
-        // Stack is a good way to represent how the items are put inside the plane
         public Stack<Luggage> luggageInPlane = new();
+        
+
+        // Max luggage capacity for each plane
+        public const int MaxLuggageDenmark = 20;
+        public const int MaxLuggageThailand = 25;
+        public const int MaxLuggageAustralia = 30;
 
         // Properties
         public string Destination
