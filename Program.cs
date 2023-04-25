@@ -80,32 +80,5 @@ namespace Bagagesorteringssystem
             Console.Read();
 
         }
-        public static void WriteLog(string strValue)
-        {
-            try
-            {
-                //Logfile
-                string path = "Log.txt";
-                StreamWriter sw;
-                if (!File.Exists(path))
-                { sw = File.CreateText(path); }
-                else
-                { sw = File.AppendText(path); }
-
-                LogWrite(strValue, sw);
-
-                sw.Flush();
-                sw.Close();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-        private static void LogWrite(string logMessage, StreamWriter w)
-        {
-            w.WriteLine("{0}", logMessage);
-            w.WriteLine("----------------------------------------");
-        }
     }
 }

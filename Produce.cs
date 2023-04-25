@@ -37,16 +37,12 @@ namespace Bagagesorteringssystem
                     {
                         case 1:
                             luggageBelt.Enqueue(new Luggage("CPH"));
-                            Program.WriteLog("Luggage to copenhagen is added");
                             break;
                         case 2:
                             luggageBelt.Enqueue(new Luggage("BKK"));
-                            Program.WriteLog("Luggage to Thailand is added");
                             break;
                         case 3:
                             luggageBelt.Enqueue(new Luggage("SYD"));
-                            Program.WriteLog("Luggage to Australia is added");
-
                             break;
                         default:
                             luggageBelt.Enqueue(new Luggage("Lost Luggage"));
